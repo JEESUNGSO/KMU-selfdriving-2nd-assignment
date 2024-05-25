@@ -40,7 +40,6 @@ def bird_eye_view(img: np.array, ldx: int, hl: int, l1: int, l2: int):
     mat = cv2.getPerspectiveTransform(points, par)
     h, w = get_hw(img)
     transform = cv2.warpPerspective(img, mat, (w, h))
-    plt.imshow(cv2.cvtColor(transform, cv2.COLOR_BGR2RGB))
     return transform
 # mat = 변환행렬(3*3 행렬)
 
