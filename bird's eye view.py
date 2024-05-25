@@ -34,7 +34,7 @@ def get_params(img: np.array):
     return np.float32([img_p1, img_p2, img_p3, img_p4])
 
 
-def img_transform(img: np.array, ldx: int, hl: int, l1: int, l2: int):
+def bird_eye_view(img: np.array, ldx: int, hl: int, l1: int, l2: int):
     par = get_params(img)
     points = get_points(img, ldx, hl, l1, l2)
     mat = cv2.getPerspectiveTransform(points, par)
@@ -50,7 +50,7 @@ if __name__ == '__main__':
     img = cv2.imread('imgs/test1.jpg')
     plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
     plt.show()
-    img_transformed = img_transform(img, 400, 400, 950, 400)
+    img_transformed = bird_eye_view(img, 400, 400, 950, 400)
     plt.imshow(cv2.cvtColor(img_transformed, cv2.COLOR_BGR2RGB))
     plt.show()
 
