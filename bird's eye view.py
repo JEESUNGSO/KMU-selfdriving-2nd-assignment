@@ -13,6 +13,7 @@ def get_hw(img: np.array):
 # 이미지에서 경로 등변사다리꼴 형태로 4개의 point 지정
 # 카메라 위치 따라서 좌표값 수정 필요 >> 임의 지정
 # ldx = 좌하점의 x좌표, hl = 사다리꼴 높이, l1 = 사다리꼴 밑변 길이, l2 = 사다리꼴 윗변 길이
+# 카메라 위치 결정되면 수정 필요한 부분. 좌표 계산도 바꿔야 할 수도 있음
 def get_points(img: np.array, ldx: int, hl: int, l1: int, l2: int):
     h, w = get_hw(img)
     p1 = [ldx + ((l1 - l2)/2), h-hl]  # 좌상
