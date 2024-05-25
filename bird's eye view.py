@@ -13,7 +13,7 @@ def get_hw(img: np.array):
 # 이미지에서 경로 등변사다리꼴 형태로 4개의 point 지정
 # 카메라 위치 따라서 좌표값 수정 필요 >> 임의 지정
 # ldx = 좌하점의 x좌표, hl = 사다리꼴 높이, l1 = 사다리꼴 밑변 길이, l2 = 사다리꼴 윗변 길이
-def get_points(img: np.array, ldx, hl, l1, l2):
+def get_points(img: np.array, ldx: int, hl: int, l1: int, l2: int):
     h, w = get_hw(img)
     p1 = [ldx + ((l1 - l2)/2), h-hl]  # 좌상
     p2 = [ldx, h]  # 좌하
@@ -33,7 +33,7 @@ def get_params(img: np.array):
     return np.float32([img_p1, img_p2, img_p3, img_p4])
 
 
-def img_transform(img: np.array, ldx, hl, l1, l2):
+def img_transform(img: np.array, ldx: int, hl: int, l1: int, l2: int):
     par = get_params(img)
     points = get_points(img, ldx, hl, l1, l2)
     mat = cv2.getPerspectiveTransform(points, par)
@@ -49,7 +49,7 @@ if __name__ == '__main__':
     img = cv2.imread('imgs/test1.jpg')
     plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
     plt.show()
-    img_transformed = img_transform(img, 400, 400, 950, 500)
+    img_transformed = img_transform(img, 400, 400, 950, 400)
     plt.imshow(cv2.cvtColor(img_transformed, cv2.COLOR_BGR2RGB))
     plt.show()
 
