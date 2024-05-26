@@ -16,6 +16,9 @@ import cv2 # opencv
 import numpy as np # 넘파이...
 from time import sleep
 
+#---사용자 라이브러리
+from get_lane import *
+
 #-----------------콜백 함수 모음--------------------------------------
 cam_image = np.empty(shape=[0]) # 이미지 초기화
 def img_callback(data):
@@ -62,7 +65,17 @@ def print_img(image):
     if image.shape[0] == 0: # 이미지가 정상적으로 불러와질 때만
         #rospy.loginfo("Image load failed (It's happened at beginning)")
         return
+    height, width = image.shape
+    vertices = np.array([
+        [0, height * 0.9],
+        [width, height * 0.9],
+        [width * 0.8, height * 0.6],
+        [width * 0.2, height * 0.6]
+    ], np.int32)
+
     cv2.imshow('camera', image)
+    lane = get_lane(image, image.shape, vertices)
+    cv2.imshow('lane', lane)
     cv2.waitKey(1)
 
 

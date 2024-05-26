@@ -35,39 +35,39 @@ def get_lane(img : np.array, size : np.array, vertices : np.array):
     return masked_by_lane
 
 # =============================== 데이터 불러오기 ====================================#
+if __name__ == '__main__':
+    file = 'imgs/drive.mp4'
+    cap = cv.VideoCapture(file)
+    Nframe = 0  # frame 수
 
-file = 'drive.mp4'
-cap = cv.VideoCapture(file)
-Nframe = 0  # frame 수
+    # ================================== 메인 루틴 =====================================#
 
-# ================================== 메인 루틴 =====================================#
+    while cap.isOpened():
+        ret, frame = cap.read()
+        if ret:  # 비디오 프레임을 읽기 성공했으면 진행
+            frame = cv.resize(frame, (1000, 562))
+        else:
+            break
 
-while cap.isOpened():
-    ret, frame = cap.read()
-    if ret:  # 비디오 프레임을 읽기 성공했으면 진행
-        frame = cv.resize(frame, (1000, 562))
-    else:
-        break
+        Nframe += 1
+        height, width = np.array([562, 1000])
+        vertices = np.array([
+            [0, height * 0.9],
+            [width, height * 0.9],
+            [width * 0.8, height * 0.6],
+            [width * 0.2, height * 0.6]
+        ], np.int32)
 
-    Nframe += 1
-    height, width = np.array([562, 1000])
-    vertices = np.array([
-        [0, height * 0.9],
-        [width, height * 0.9],
-        [width * 0.8, height * 0.6],
-        [width * 0.2, height * 0.6]
-    ], np.int32)
-
-    lane = get_lane(frame,np.array([1000, 562]), vertices)
+        lane = get_lane(frame,np.array([1000, 562]), vertices)
 
 
-    # 이미지 원본 + 전처리 영상 출력하기
-    cv.imshow('lanes', lane)  # 차선 검출 결과
+        # 이미지 원본 + 전처리 영상 출력하기
+        cv.imshow('lanes', lane)  # 차선 검출 결과
 
-    if cv.waitKey(1) & 0xff == ord('q'):  # 'q'누르면 영상 종료
-        break
+        if cv.waitKey(1) & 0xff == ord('q'):  # 'q'누르면 영상 종료
+            break
 
-print("Number of Frame: ", Nframe)  # 영상의 frame 수 출력
+    print("Number of Frame: ", Nframe)  # 영상의 frame 수 출력
 
-cap.release()
-cv.destroyAllWindows()
+    cap.release()
+    cv.destroyAllWindows()
