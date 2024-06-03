@@ -1,2 +1,7 @@
-*.idea
-__pycahe__
+.idea/
+__pycache__/
+imgs/
+data_processing/driving_images_2/
+data_processing/data.pickle
+
+middle_point.h5

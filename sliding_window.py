@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from birds_eye_view import bird_eye_view
+from Birdseye_view import bird_eye_view
 
 def get_start_window(mask_img, ratio): # mask_img: 마스크 이미지, ratio: 초기 윈도우를 구하기 위한 (최대 탐색 높이/ 전체 높이)
     # 윈도우 제일 아래 시작 지점 구하기
