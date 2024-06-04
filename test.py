@@ -46,7 +46,6 @@ rospy.Subscriber('usb_cam/image_raw', Image, img_callback) # 카메라 토픽 �
 #rospy.Subscriber('carla_ctl/imu', Imu, imu_callback) # imu 토픽 콜백함수와 연결
 
 #---publisher 설정
-rate = 0.1 # publish 하는 주기 (단위: 초)
 ctl_pub = rospy.Publisher('xycar_motor', xycar_motor, queue_size=1) # 컨트롤 값 publisher 설정하기
 
 
@@ -99,16 +98,24 @@ def get_middle_point(image, model):
     image_gray = image_gray[60:]
     image_norm = image_gray / 255.0
     image_norm = np.expand_dims(image_norm, axis=0)
-    x_pred = model.predict(image_norm, verbose=0)[0][0]
-    filtered_x_pred = moving_average_filter(x_pred) # 이동 평균 필터 적용
+    x_pred = int(model.predict(image_norm, verbose=0)[0][0])
+    #filtered_x_pred = moving_average_filter(x_pred) # 이동 평균 필터 적용
     #if abs(filtered_x_pred - x_pred) > 5:
     #    print(f"x_pred: {filtered_x_pred}, filtered_x_pred: {filtered_x_pred}")
-    return filtered_x_pred * 5, int(120*0.7) * 5
+    return x_pred * 5, int(120*0.7) * 5
 
 
+def speed_multiplier_1(x, mul):
+    x *= mul
+    return 1/(1 + x**2)
+
+def speed_multiplier_2(x, mul, min):
+    x *= mul
+    return max([min, -abs(x) + 1])
 
 #-----------------데이터 처리 및 실행--------------------------------------
 model = load_model('/home/sungso/catkin_ws/src/assignment_2/src/middle_point.h5')
+speed = 0 # 시작시 정지 (토픽에 전달하는 speed는 아마 최대 속력에 곱해지는 값인것 같음)
 
 # 신호등 roi
 x = 727
@@ -116,30 +123,15 @@ y = 75
 w = 60
 h = 60
 
-speed = 0 # 시작시 정지
+SPEED = 0.9 # 속도 최댓값
 
-#cnt = 1 # 이미지 인덱스
+rate = 0.1 # publish 하는 주기 (단위: 초)
+
 f_time = rospy.get_time() # publish를 주기마다 해주기 위해
 while not rospy.is_shutdown():
     # 시작 신호 기다리기
     if speed == 0 and check_traffic_light(cam_image, x, y, w, h, 180):
-        speed = 0.55 # 속도 설정
-
-
-    #---차선검출하기
-    # lane_mask = get_lane_mask(cam_image)
-    # cv2.imshow('lane_mask', lane_mask)
-
-
-    #---슬라이딩 윈도우 적용하기
-    # # 이미지 birds eye view로 변환
-    # mask_img = bird_eye_view(mask_img, 0, int(mask_img.shape[0] / 1.5), 444, 120)
-    # # 슬라이딩 윈도우
-    # result = get_windows(mask_img, 20, 50, 0.3)
-    # # 출력
-    # cv2.imshow('mask_img', mask_img)
-    # cv2.waitKey(0)
-
+        speed = SPEED # 속도 설정
 
     #---차량 전진시키기
     if is_similar(rospy.get_time() - f_time, rate):  # 주기가 되었을때만
@@ -153,13 +145,16 @@ while not rospy.is_shutdown():
 
         #---PID 제어값 계산
         u = get_u(400, pt_x) # 화면 중앙 값: 400, 중앙 위치값: pt_x
-        #print(400 - pt_x)
+
+        #speed = SPEED * speed_multiplier_1(u, 8)
+        speed = SPEED * speed_multiplier_2(u, 6, 0.66)
+        #print(speed, "  ----------  ", u)
+
+
+        #---회전값에 의해 차량 속도 제어
         drive(u, speed)
 
-        # 이미지 저장
-        # if cam_image.shape[0] != 0:
-        #     rospy.loginfo(cv2.imwrite(f'/home/sungso/catkin_ws/src/assignment_2/src/driving_images_2/img_{1600+cnt}.jpg', cam_image))
-        #     cnt += 1
+
         f_time = rospy.get_time()  # 시작시간 업데이트
 
     cv2.waitKey(1)
