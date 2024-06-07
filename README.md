@@ -30,9 +30,13 @@
      ![model](https://github.com/JEESUNGSO/KMU-selfdriving-2nd-assignment/blob/main/data_processing/model.png?raw=true)
   4. training
      - 약간 과적합 된 경향이 있었음. 그러나 주행해야하는 환경이 변하지 않고 빠르게 달리는게 주 목적이고, 제출 프로그램에 문제가 발생하여 해결할 시간을 확보하고자 개선없이 마무리 하였음
+     - 
 ## 4. PID 컨트롤
   - [1차 과제](https://github.com/JEESUNGSO/KMU-selfdriving-1st-assignment)를 참고하기를 바람
+  - 
 ## 5. 결과
+  - 이미지를 클릭하시면 유튜브 영상으로 연결 됩니다.
+  [![주행 영상](https://i9.ytimg.com/vi/GvpFaJiU7H0/mqdefault.jpg?sqp=CPiDjLMG&rs=AOn4CLAfZ22uk9EJoIOzajsil0EY6fFm-Q&retry=4)](https://youtu.be/GvpFaJiU7H0)
   
 ## 6. 개선할 점
   1. 가장큰 문제는 직선구간 가속후 회전시 e값의 변화가 점점 커지기 때문에 속도에 비해 u(steering)값이 느리게 변해 벽과 중돌이 발생.
