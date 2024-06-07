@@ -2,6 +2,9 @@ import cv2
 import numpy as np
 
 def check_traffic_light(image, x, y, w, h, threshold):
+    if len(image.shape) == 1:  # if image is not loaded then wait(False)
+        return False
+
     roi = image[y:y+h, x:x+w]
 
     green_hist = get_histogram(roi)

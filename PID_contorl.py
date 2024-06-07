@@ -1,9 +1,9 @@
 import numpy as np
 
 # 사용할 상수 및 변수 선언
-Kp = 0.001
+Kp = 0.00085
 Ki = 0.000000001
-Kd = 0.00267
+Kd = 0.002
 
 accuE = 0
 bef_error = 99999
